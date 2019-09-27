@@ -297,7 +297,7 @@ recon_channel:        # optional: url for specific recon channel to join
 <p>
   If you do not already have MATLAB installed on your PC, then you 
   can install a student version of MATLAB by following the installation 
-  instructions provided at <a href = "https://collegeintranet.swan.ac.uk/handbooks/files/16_17/Engineering%20Software%20install%20for%20students-5.pdf"> Install MATLAB</a>.
+  instructions provided at <a href = "https://myuni.swansea.ac.uk/it-services/software-enquiry/"> Install MATLAB</a>.
 </p>
 <p>
   If you already have MATLAB installed on your PC, then make sure that 
