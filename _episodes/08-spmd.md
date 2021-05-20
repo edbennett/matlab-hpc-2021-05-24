@@ -10,7 +10,7 @@ objectives:
 - "To learn to use the **spmd** construct in MATLAB."
 - "To learn to create distributed arrays."
 - "To learn to work in **pmode**."
-keypoints:
+key points:
 - "**spmd** offers a more flexible environment for
    parallel programming when compared with **parfor**."
 - "All the workers in the pool execute the statements
@@ -21,13 +21,13 @@ keypoints:
 ## spmd
 * **spmd** stands for **s**ingle **p**rogram **m**ultiple **d**ata.
 SPMD, in the parallel computing paradigm, usually refers to a parallel program
-written for distributed-memory architectures using the Message-Passing Inteface (MPI).
+written for distributed-memory architectures using the Message-Passing Interface (MPI).
 * **s**ingle **p**rogram refers to the fact that the statements inside
   the block execute on all the workers in the active parallel loop.
 * **m**ultiple **d**ata aspect refers to the ability of the workers (labs) to work
   on a different data set while executing the same code.
 
-The basic syntax for **smpd** programs in MATLAB is:
+The basic syntax for **spmd** programs in MATLAB is:
 ~~~
 % execution on master/client
 spmd (n)
@@ -62,24 +62,43 @@ participating in the parallel pool corresponding to that **spmd** block.
 To understand how **spmd** in MATLAB works, let's create a
 MATLAB script with the following code and run it:
 ~~~
-A = eye(5,5);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% this section is run on the host
 
+print("This is before the spmd block so its running on the host.\n")
+A = eye(5,5)
+B = 7
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% everything inside this spmd block is run on each worker
 spmd
-    Adist = codistributed(A);
-    getLocalPart(Adist)
+    fprintf("Hello this is Worker %d \n", labindex)
+    A = A + labindex
+
+    C = B + 5;
 
     if(labindex == 1)
-      B = magic(3);
+      D = magic(3);
     else
-      B = magic(5);
+      D = magic(5);
     end
 end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% we are now back to the host
+print("This is After the spmd block so its running on the host.\n")
 
+% note how A now has 2 copy's one for each worker
+A
+% although we used B inside the spmd block unlike A it hasn't been copied
+% because we only read the value and didn't change it
 B
-
-B{1}
-
-B{2}
+% C and D are local variables so we have one copy for each worker
+C
+D
+% you can also access each workers local copies using the following syntax.
+% However this can only be done outside the spmd block and cannot be altered.
+D{1}
+D{2}
 ~~~
 {: .language-matlab}
 
@@ -125,26 +144,30 @@ B =
 
 The above program:
 * creates matrix `A` as a 5x5 identity matrix on the client/master.
+* creates the variable `B` as an integer on the client/master.
 * then opens an **spmd** block.
-* creates a distributed array `Adist` by copying the contents of `A`.
-* gets the local part of `Adist` and prints it to the screen.
-* creates a local variable `B`.
+* Changes the variable `A` by adding the local variable `labindex` to
+each element. .
+* creates a local variable `C` set as `B + 5`.
 * ends the **spmd** block.
-* prints the contents of `B`.
-* prints the contents of `B{1}`.
-* prints the contents of `B{2}`.
+* prints the contents of `A`,`B`,`C` and `D`.
+* prints the contents of `D{1}`.
+* prints the contents of `D{2}`.
 
 In the above program:
-* `A` is an array variable that is local to the client/master.
-* `Adist` is the distributed array, meaning that the contents of
-  `Adist` are stored among the workers. Each worker stores only
-  a portion of `Adist`.
-* array variable `B` is local to each worker in the parallel pool.
-  In the strict sense of parallel programming, accessing of `B`
-  using `B{1}` and `B{2}` is *illegal* because it is created
-  inside the **spmd** block. But, MATLAB allows this. In MATLAB `B`
-  is called as a *composite* variable.
-* `labindex` is the rank of the worker.
+* `A` and `B` are variables that are are local to the client/master.
+* Inside the spmd block we also have access to these variables.
+* However, because we alter the value of `A` inside the block. This implicitly copies `A`
+so each worker now has its own local copy which are then altered. When we come to print this
+we therefore get one copy of `A` for each worker.
+* This is not the case for `B` because we simply use it to set a new local variable `C` and don't alter its value.
+* The variables `C` and `D` are local to each worker in the parallel pool.
+* `labindex` is the rank of the worker. We can use this to alter the task based on the worker.
+In this case we used it to give each worker a different value of varible `D`.
+* We can acess the specifc local values for each worker outside the smd block using the `D{1}` and `D{2}` syntax.
+* In the strict sense of parallel programming, accessing of `D` is *illegal* because it is created
+  inside the **spmd** block. But, MATLAB allows this however they can not be altered.
+* In MATLAB variables like this are is called are called *composite* variables.
 
 
 ## Variable persistence in sequences of **spmd** constructs
