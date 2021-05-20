@@ -2,18 +2,18 @@
 layout: workshop      # DON'T CHANGE THIS.
 carpentry: "sa2c"    # what kind of Carpentry (must be either "lc", "dc", "swc", "sa2c" or "sa2c_mpi")
 venue: "High Performance Computing with MATLAB"        # brief name of host site without address (e.g., "Euphoric State University")
-address: "The Boardroom, Computational Foundry, Bay Campus, Swansea University"      # full street address of workshop (e.g., "Room A, 123 Forth Street, Blimingen, Euphoria")
+address: "Online"      # full street address of workshop (e.g., "Room A, 123 Forth Street, Blimingen, Euphoria")
 country: "United Kingdom"      # lowercase two-letter ISO country code such as "fr" (see https://en.wikipedia.org/wiki/ISO_3166-1)
 language: "English"     # lowercase two-letter ISO language code such as "fr" (see https://en.wikipedia.org/wiki/ISO_639-1)
 latlng: "51.619229,-3.878739"       # decimal latitude and longitude of workshop venue (e.g., "41.7901128,-87.6007318" - use https://www.latlong.net/)
-humandate: "September 30th, 2019"    # human-readable dates for the workshop (e.g., "Feb 17-18, 2020")
-humantime: "9:00 AM - 5:00 PM"    # human-readable times for the workshop (e.g., "9:00 am - 4:30 pm")
-startdate: 2019-09-30      # machine-readable start date for the workshop in YYYY-MM-DD format like 2015-01-01
-enddate: 2019-09-30        # machine-readable end date for the workshop in YYYY-MM-DD format like 2015-01-02
-scw_project: "FIXME"  # project code for the SCW training project for this event
-instructor: ["Chennakesava Kadapa"] # boxed, comma-separated list of instructors' names as strings, like ["Kay McNulty", "Betty Jennings", "Betty Snyder"]
-helper: [" "]     # boxed, comma-separated list of helpers' names, like ["Marlyn Wescoff", "Fran Bilas", "Ruth Lichterman"]
-email: ["c.kadapa@swansea.ac.uk"]    # boxed, comma-separated list of contact email addresses for the host, lead instructor, or whoever else is handling questions, like ["marlyn.wescoff@example.org", "fran.bilas@example.org", "ruth.lichterman@example.org"]
+humandate: "May 24-27, 2021"    # human-readable dates for the workshop (e.g., "Feb 17-18, 2020")
+humantime: "1:00pm - 4:30pm"    # human-readable times for the workshop (e.g., "9:00 am - 4:30 pm")
+startdate: 2021-05-24      # machine-readable start date for the workshop in YYYY-MM-DD format like 2015-01-01
+enddate: 2021-05-27        # machine-readable end date for the workshop in YYYY-MM-DD format like 2015-01-02
+scw_project: "scw1389"  # project code for the SCW training project for this event
+instructor: ["Ben Thorpe", "Vladimir Khodygo"] # boxed, comma-separated list of instructors' names as strings, like ["Kay McNulty", "Betty Jennings", "Betty Snyder"]
+helper: ["Ed Bennett", "Michele Mesiti"]     # boxed, comma-separated list of helpers' names, like ["Marlyn Wescoff", "Fran Bilas", "Ruth Lichterman"]
+email: ["e.j.bennett@swansea.ac.uk"]    # boxed, comma-separated list of contact email addresses for the host, lead instructor, or whoever else is handling questions, like ["marlyn.wescoff@example.org", "fran.bilas@example.org", "ruth.lichterman@example.org"]
 collaborative_notes:             # optional: URL for the workshop collaborative notes, e.g. an Etherpad or Google Docs document
 eventbrite:           # optional: alphanumeric key for Eventbrite registration, e.g., "1234567890AB" (if Eventbrite is being used)
 recon_channel:        # optional: url for specific recon channel to join
@@ -124,17 +124,26 @@ recon_channel:        # optional: url for specific recon channel to join
   Modify the block below if there are any special requirements.
 {% endcomment %}
 <p id="requirements">
-  <strong>Requirements:</strong> Participants must bring a laptop with a
-  Mac, Linux, or Windows operating system (not a tablet, Chromebook, etc.) 
-  that they have administrative privileges on. They should have <strong> a recent
-  working version of MATLAB software along with the Parallel 
-  Computing Toolbox </strong> installed. They are also required to abide by
-  {% if page.carpentry == "swc" or page.carpentry == "sa2c" or page.carpentry == "sa2c_mpi" %}
+  <strong>Requirements:</strong> You will need a computer with macOS, Linux, or
+  Windows operating system (not a tablet, Chromebook, etc.) that you have
+  administrative privileges on. As this is a course on improving the performance
+  of MATLAB code, you will need some experience of programming in MATLAB. You
+  will also need some familiarity with accessing high-performance computing
+  machines using the command line, and using the Slurm job scheduler&mdash;if
+  you haven't done these before, we'd recommend reading through the <a
+  href="https://supercomputingwales.github.io/SCW-tutorial">Introduction to
+  High-Performance Computing with Supercomputing Wales</a> before getting
+  started with this material. For the hackathon portion of the event, you will
+  be working on a piece of your own research software that you want to improve
+  the performance of. You are also required to abide by
+  {% if page.carpentry == "swc" %}
   Software Carpentry's
   {% elsif page.carpentry == "dc" %}
   Data Carpentry's
   {% elsif page.carpentry == "lc" %}
   Library Carpentry's
+  {% else %}
+  The Carpentries'
   {% endif %}
   <a href="{{site.swc_site}}/conduct.html">Code of Conduct</a>.
 </p>
@@ -148,19 +157,10 @@ recon_channel:        # optional: url for specific recon channel to join
 <p id="accessibility">
   <strong>Accessibility:</strong> We are committed to making this workshop
   accessible to everybody.
-  The workshop organizers have checked that:
-</p>
-<ul>
-  <li>The room is wheelchair / scooter accessible.</li>
-  <li>Accessible toilets are available.</li>
-</ul>
-<p>
-  Materials will be provided in advance of the workshop and
-  large-print handouts are available if needed by notifying the
-  organizers in advance.  If we can help making learning easier for
-  you (e.g. sign-language interpreters, lactation facilities) please
+  Materials will be provided in advance of the workshop. 
+  If we can help making learning easier for you please
   get in touch (using contact details below) and we will
-  attempt to provide them.
+  attempt to provide additional support.
 </p>
 
 {% comment %}
@@ -492,3 +492,49 @@ recon_channel:        # optional: url for specific recon channel to join
   </ol>
 </div>
 {% endcomment %}
+
+
+
+<h3 id="videoconferencing">Install the videoconferencing client</h3>
+
+{% comment %}
+Replace the paragraph below with the relevant installation instructions
+if you do not use Zoom
+{% endcomment %}
+<p>
+  If you haven't used Zoom before, go to the
+  <a href="https://zoom.us/download">official website</a>
+  to download and install the Zoom client for your computer.
+</p>
+
+
+<h4>Set up your workspace</h4>
+
+<p>
+  Like other Carpentries workshops,
+  you will be learning by "coding along" with the Instructors.
+  To do this, you will need to have both the window for the tool
+  you will be learning about (a terminal, RStudio, your web browser, etc..)
+  and the window for the Zoom video conference client open.
+  In order to see both at once,
+  we recommend using one of the following set up options:
+  <ul>
+    <li><strong>Two monitors:</strong> If you have two monitors,
+      plan to have your terminal up on one monitor and
+      the video conferencing software on the other.</li>
+    <li><strong>Two devices:</strong> If you don't have two monitors,
+      do you have another device (tablet, smartphone) with a medium to large
+      sized screen? If so, try using the smaller device as your video
+      conference connection and your larger device (laptop or desktop)
+      to follow along with the tool you will be learning about.</li>
+    <li><strong>Divide your screen:</strong> If you only have one device
+      and one screen, practice having two windows
+      (the video conference program and one of the tools you will be using
+      at the workshop) open together.
+      How can you best fit both on your screen?
+      Will it work better for you to toggle between them
+      using a keyboard shortcut?
+      Try it out in advance to decide what will work best for you.</li>
+  </ul>
+  This <a href="https://carpentries.org/blog/2020/06/online-workshop-logistics-and_screen-layouts/" target="_blank">blog post</a> includes detailed information on how to set up your screen to follow along during the workshop.
+</p>
