@@ -1,30 +1,4 @@
 ---
-<<<<<<< HEAD
-layout: lesson
-root: .  # Is the only page that doesn't follow the pattern /:path/index.html
-permalink: index.html  # Is the only page that doesn't follow the pattern /:path/index.html
----
-In this lesson, you will learn how to make your MATLAB code 
-run effectively and efficiently using commandline and 
-high-performance computing.
-
-<!-- this is an html comment -->
-
-{% comment %} This is a comment in Liquid {% endcomment %}
-
->## Prerequisites
->This lesson assumes some familiarity with programming in MATLAB 
-and basics of command line.
->If you are not familiar with commandline and shell scripts, 
-then we would recommend working through the Software Carpentry's 
-[The Unix Shell](http://swcarpentry.github.io/shell-novice/) lesson.
->If you want to brush up your knowledge of MATLAB, then we suggest 
-going through the Software Carpentry's lesson [Programming with MATLAB
-](https://swcarpentry.github.io/matlab-novice-inflammation/).
-{: .prereq}
-
-{% include links.md %}
-=======
 layout: workshop      # DON'T CHANGE THIS.
 carpentry: "sa2c"    # what kind of Carpentry (must be either "lc", "dc", "swc", "sa2c" or "sa2c_mpi")
 venue: "High Performance Computing with MATLAB"        # brief name of host site without address (e.g., "Euphoric State University")
@@ -564,4 +538,3 @@ if you do not use Zoom
   </ul>
   This <a href="https://carpentries.org/blog/2020/06/online-workshop-logistics-and_screen-layouts/" target="_blank">blog post</a> includes detailed information on how to set up your screen to follow along during the workshop.
 </p>
->>>>>>> 613d6e3c0f92da7e27b28704a0c045b8eb0e7fef

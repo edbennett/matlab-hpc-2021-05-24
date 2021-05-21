@@ -54,7 +54,6 @@ and to meet some of our community members.
 2.  If you wish to change CSS style files, tools,
     or HTML boilerplate for lessons or workshops stored in `_includes` or `_layouts`,
     please work in <https://github.com/swcarpentry/styles>.
->>>>>>> 613d6e3c0f92da7e27b28704a0c045b8eb0e7fef
 
 ## What to Contribute
 
