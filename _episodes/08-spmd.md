@@ -456,18 +456,34 @@ B = gather(A);              % returns the array to the client
 {% include links.md %}
 
 ## Explicit data transfer
-In a parallel program, we are often required to transfer data between
-the workers. Here are some examples of this:
+In a parallel program, we are often required to transfer data between workers. Some real
+world examples of this include:
 * To get the interface fluxes from the neighbouring element in finite element analysis;
 * In evaluating stencils/operators in finite difference schemes;
 * For some averaging operations for pixels in image processing;
-* Et cetera.
 
 The **spmd** construct offers a flexible environment for explicit data
-transfer between the workers. MATLAB PCT provides its own functions that
-are equivalent to `MPI_Send`, `MPI_Receive`, `MPI_SendReceive`, `MPI_Barrier`,
-`MPI_Broadcast`, and others in the MPI paradigm. The MATLAB equivalent of these functions
-are `labSend`, `labReceive`, `labSendReceive`, `labBarrier` and `labBroadcast`.
+transfer between the workers. For communication between workers MATLAB PCT provides the
+following functions [`labSend`](https://uk.mathworks.com/help/parallel-computing/labsend.html)
+, [`labReceive`](https://uk.mathworks.com/help/parallel-computing/labreceive.html),
+[`labSendReceive`](https://uk.mathworks.com/help/parallel-computing/labsendreceive.html),
+[`labBarrier`](https://uk.mathworks.com/help/parallel-computing/labbarrier.html)
+and [`labBroadcast`](https://uk.mathworks.com/help/parallel-computing/labbroadcast.html?s_tid=doc_ta).
+
+> ## Similarities of Matlab PCT to MPI.
+> Users who are familiar with the MPI standard used for process communication in C/C++ and FORTRAN
+> may have noticed a similarity of Matlab PCT's functions to `MPI_Send`, `MPI_Receive`,`MPI_SendReceive`,
+> `MPI_Barrier`,`MPI_Broadcast`, and others in the MPI paradigm. This is no accident, matlab actually
+> calls these functions under the hood and they work in much the same way. So if you have some familiarity
+> with MPI the skills will transfer over quite easily. The only major difference is that in matlab PCT ***all
+> communication is blocking*** (i,.e. it has no equivent fuction to`MPI_ISend` ect).
+{: .callout}
+
+## `labSend`
+ * function to send `data` given as an input argumant to another worker
+ * `data` can be any supported MATLAB data type.
+ * `rcvLabIdx` must be a positive integer, or vector integers between 1 and *numlabs*.
+ * `tag` is optional and must be a non-negative integer from 0 to 32767. Default value is 0.
 
 ### Syntax and usage for `labSend`
 ~~~
