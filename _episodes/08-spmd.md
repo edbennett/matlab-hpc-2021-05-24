@@ -376,62 +376,33 @@ is in the amount of flexibility in controlling the distribution pattern.
 > > `Adist3` is created as a distributed array but all of its contents are
 stored only on the client.
 > > Operation `Adist1 - Adist2` works fine. But MATLAB throws an error
-`"It is illegal to mix distributed and codistributed arrays in an opeeration."`
-when it tries to executre `Adist1 - Adist3`.
+`"It is illegal to mix distributed and codistributed arrays in an operation."`
+when it tries to executre `Adist1 - Adist3`. To fix this we need to put the
+assignment of `Adist3` inside the spmd block. 
 > {: .solution}
 {: .challenge}
 
-
-> ## Exercise - Parallel direct solver
-> In this exercise, we use the parallel direct solver, the `\` operator,
-> in MATLAB PCT to solve a matrix system.
-> ~~~
-> clc;
-> 
-> n = 1000;
-> A = randi(100,n,n);
-> ADist = distributed(A);
-> 
-> b = sum(A,2);
-> bDist = sum(ADist,2);
-> 
-> xEx = ones(n,1);
-> xDistEx = ones(n,1,'distributed');
-> 
-> tic
-> x = A\b;
-> err = norm(xEx-x)
-> toc
-> 
-> tic
-> xDist = ADist\bDist;
-> errDist = norm(xDistEx-xDist)
-> toc
-> ~~~
-> {: .language-matlab}
-{: .challenge}
-
 ## Gathering data
-Until now, we have looked at techniques for distributing the data among
-the workers in a parallel pool. Often, we need to gather from all
+We have looked at techniques for distributing the data among
+the workers in a parallel pool. However, often, we need to gather from all
 the workers, for example, for plotting. MATLAB PCT provides a function
 `gather` for this purpose.
 
 The output of `gather` varies depending upon where it is called in the code.
 
 - Inside the **spmd** block:
-    * `gather` collects (gathers) all the elements of an array from all the workers and sends
+    * `gather` collects (gathers) all the elements of a distributed array from all the workers and sends
     the entire collection to all the workers. This is the default behaviour if
     no second argument is specified.
-    * `gather` can also gather all the elements of an array from all the workers and send them
+    * `gather` can also gather all the elements of a distrbuted array from all the workers and send them
     to a particular worker, if a second argument is specified.
     `B=gather(A,labnum)` gathers all the elements of `A` from all the workers onto the worker
     `labnum`.
 
 - Outside the **spmd** block:
-    * `gather` gathers all the elements to the client workspace.
+    * `gather` gathers all the elements of a distributed array from each worker to the client workspace.
 
-`gather` with codistributed arrays:
+### `gather` with co-distributed arrays:
 ~~~
 n = 20;
 spmd
@@ -444,7 +415,7 @@ D = gather(A);                    % gathers all elements to the client
 {: .language-matlab}
 
 
-`gather` with distributed arrays.
+### `gather` with distributed arrays.
 ~~~
 n = 20;
 A = distributed(magic(n));  % a distributed array on all workers
@@ -501,12 +472,8 @@ labSend(a, 3, 1234)     % sends array `a` and a tag value 1234 to the worker 3.
 ~~~
 {: .language-matlab}
 
-> ## `labSend`
-> * `data` can be any supported MATLAB data type.
-> * `rcvLabIdx` must be a positive integer, or vector integers between 1 and *numlabs*.
-> * `tag` must be a nonnegative integer from 0 to 32767. Default value is 0.
-{: .callout}
-
+## `labRecieve`
+ * this is a function to receive data from another worker that has previously called `labSend`
 
 ### Syntax and usage for `labReceive`
 ~~~
@@ -520,12 +487,93 @@ a = labReceive(1, 1234)            % receives the data from lab 1 that matches t
 ~~~
 {: .language-matlab}
 
+## `labSendReceive`
+ * `labSendReceive` is a convenience functon. As the name sudgests is equivelent to `labSend` immediately
+ followed by `labReceive`.
+
+### Syntax and usage for `labSendReceive`
+~~~
+%`data = labSendReceive(rcv_index,src_index,dataSent,tag)`
+
+% `rcv_index` is the labindex of the worker to which data is to be sent.
+% `src_index` is the labindex of the worker that is sending data
+% `dataSent` is the data you wish to send
+
+a = labSendReceive(2,1,data)
+% this is equivent to:
+labSend(data,2)
+a = labReceive(1);
+~~~
+{: .language-matlab}
+
+## `labBroadcast`
+* this is a special version of `labSend` that sends the given data to all other workers
+
+
+### Syntax and usage for `labBroadcast`
+~~~
+% shared_data = labBroadcast(src_Index,data)
+% shared_data = labBroadcast(src_Index)
+
+
+% if data is given it sends the specified data to all executing workers. The data is broadcast
+% from the worker with labindex == src_Index, and is received by all other workers.
+shared_data = labBroadcast(src_Index,data)
+
+% if data is NOT given the worker waits to receive data from a worker with labindex == src_Index.
+shared_data = labBroadcast(src_Index)
+
+src_Index = 1;
+if labindex == src_Index
+  data = randn(10);
+  shared_data = labBroadcast(src_Index,data);
+else
+  shared_data = labBroadcast(src_Index);
+end
+~~~
+{: .language-matlab}
+
+
+## `labBarrier`
+ * pauses the current worker at this line until every worker reaches this line.
+ * Not used for communication as such. This is more for process synchronisation, that is ensuring
+ that all workers have completed up to that point in the block before moving on.
+ * Be careful when using this, especially within complex if statements. You need to ensure that every
+ worker will eventually reach this line as otherwise your program will simply hang forever.
+
+## `gop`
+ * `gop` stands for global operation across all workers.
+ * allows you to call a function (either built in or user defined) on all workers inside an smd block.
+ * the result of this function can then either be sent to a specfic worker or broadcast to all of them.
+ 
+### Syntax and usage for `gop`
+~~~
+% res = gop(FUN,x)
+% res = gop(FUN,x,targetlab)
+
+res = gop(FUN,x); % performs the function FUN, and duplicate the result on all workers.
+res = gop(FUN,x,targetlab); % performs the function FUN, and places the result into res only on the worker indicated by targetlab. res is set to [] on all other workers.
+
+% This example shows how to calculate the sum and maximum values for x among all workers.
+x = Composite(); 
+x{1} = 3;
+x{2} = 1;
+x{3} = 4;
+x{4} = 2;
+spmd
+    xsum = gop(@plus,x);
+    xmax = gop(@max,x,1);
+end
+xsum
+xmax
+~~~
+{: .language-matlab}
 
 > ## Blocking communication
-> The `labSend` function can block the execution until the
-corresponding `labReceive` function is executed in the receiving lab.
-This can lead to communication blockage between the workers, which makes this
-program hang forever.
+> With MATLAB PCT all communication is Blocking. This means the `labSend` function can block the execution until the
+corresponding `labReceive` function is executed in the receiving lab. This can lead to the program hanging
+forever waiting to send/receive information. Thus we need to make sure that every `labSend` has a call from
+another worker with a corresponding `labReceive` (and vice versa).
 {: .callout}
 
 > ## Exercise on communication
