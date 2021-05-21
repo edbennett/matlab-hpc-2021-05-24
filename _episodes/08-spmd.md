@@ -163,8 +163,8 @@ we therefore get one copy of `A` for each worker.
 * This is not the case for `B` because we simply use it to set a new local variable `C` and don't alter its value.
 * The variables `C` and `D` are local to each worker in the parallel pool.
 * `labindex` is the rank of the worker. We can use this to alter the task based on the worker.
-In this case we used it to give each worker a different value of varible `D`.
-* We can acess the specifc local values for each worker outside the smd block using the `D{1}` and `D{2}` syntax.
+In this case we used it to give each worker a different value of variable `D`.
+* We can access the specific local values for each worker outside the spmd block using the `D{1}` and `D{2}` syntax.
 * In the strict sense of parallel programming, accessing of `D` is *illegal* because it is created
   inside the **spmd** block. But, MATLAB allows this however they can not be altered.
 * In MATLAB variables like this are is called are called *composite* variables.
@@ -312,7 +312,7 @@ end
 {: .language-matlab}
 
 
-## distributed vs codistributed arrays
+## distributed vs co-distributed arrays
 So far we have seen the use of the **codistributed** function for creating
 distributed arrays in MATLAB PCT. MATLAB offers another function
 **distributed** which works in a similar fashion but with a slight difference.
@@ -329,10 +329,10 @@ is in the amount of flexibility in controlling the distribution pattern.
     that is distributed among all the workers in the parallel pool.
   * We *cannot* control the distribution details when using this function.
   * Use **distributed** to create a distributed array by copying
-    the data on the client workspace or a datastore, using the default
+    the data on the client workspace or a data-store, using the default
     distribution pattern.
 * **codistributed**
-  * When used in an `spmd` block or in **pmode**, **codistributed**
+  * When used in an `spmd` block (or in **pmode**), **codistributed**
     creates an array that is distributed among the workers in the
     parallel pool. But when used outside an `spmd` block, the entire
     content of the array is stored on the client.
@@ -342,19 +342,21 @@ is in the amount of flexibility in controlling the distribution pattern.
     for example, row-wise distribution or block distribution instead of
     the default column-wise distribution.
   * Use **codistributed** to create a distributed array by copying
-    the data on the client workspace or a datastore, using either the default
+    the data on the client workspace or a data-store, using either the default
     distribution pattern or a distribution pattern of our liking.
 
 
-> ## **distributed** inside `spmd` or **pmode**
+> ## **distributed** inside **spmd**
 > **distributed** inside `spmd` block creates a variable
   of class `spmdlang.InvalidRemote`. **Never** use **distributed**
-  inside the `spmd` block or in **pmode**.
+  inside the `spmd` block.
 {: .callout}
 
 > ## Exercise on distributed arrays
-> Run the following code from a script (not in pmode), and
+> The following Matlab code contains and error. Run the code from a script, and
 > observe the output:
+>
+> What is the error and how could you fix the code?
 > ~~~
 > A = eye(5,5);  % array on the client/master
 >
